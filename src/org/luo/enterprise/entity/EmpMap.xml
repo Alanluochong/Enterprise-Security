@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="org.luo.enterprise.dao.EmpMapperDao">
+	<insert id="addEmp" parameterType="org.luo.enterprise.entity.Emp">
+		insert into emp(ename,Phone,IDCARD_NO,Email,ENTRYDATE,GENDER,SAL,DEPTNO,AGE)
+		values(#{ename},#{phone},#{idcard_no},#{email},CURDATE(),#{gender},
+		#{sal},#{deptno},#{age})
+	</insert>
+	<select id="findPage" parameterType="org.luo.enterprise.util.Page" resultType="org.luo.enterprise.entity.Emp">
+		select e.*,d.dname
+		 from EMP as e,DEPT as d 
+		where e.deptno=d.deptno limit #{begin},#{end}
+	</select>
+	<select id="findRows" resultType="int">
+		select count(*) from EMP
+	</select>
+	<delete id="deleteEmp" parameterType="int">
+		delete from emp where id=#{id}
+	</delete>
+	<select id="findById" parameterType="int" resultType="org.luo.enterprise.entity.Emp">
+		select * from emp where id=#{id}
+	</select>
+	<update id="updateEmp" parameterType="org.luo.enterprise.entity.Emp">
+		update emp set ename=#{ename},deptno=#{deptno},phone=#{phone},
+		sal=#{sal},email=#{email} where id=#{id}
+		
+	</update>
+	
+	
+	
+	
+</mapper>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.2.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.3.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
+	<!-- 开启注解扫描 -->
+	<context:component-scan base-package="org.luo.enterprise"/>
+	<!-- 开启@RequestMapping注解映射 -->
+	<mvc:annotation-driven/>
+	<!-- 配置拦截器 -->
+	<mvc:interceptors>
+		<!-- 登录检查,如果没有登录则重定向到登录页面 -->
+		<mvc:interceptor>
+			<mvc:mapping path="/**"/>
+			<mvc:exclude-mapping path="/login/**"/>
+			<mvc:exclude-mapping path="/styles/*"/>
+			<mvc:exclude-mapping path="/images/*"/>
+			<mvc:exclude-mapping path="/js/*"/>
+			<bean class="org.luo.enterprise.interceptor.MyInterceptor"/>
+		</mvc:interceptor>
+		<mvc:interceptor>
+			<mvc:mapping path="/admin/**"/>
+			<mvc:exclude-mapping path="/admin/tomodifypwd"/>
+			<mvc:exclude-mapping path="/admin/modifypwd"/>
+			<bean class="org.luo.enterprise.interceptor.CheckRootInterceptor"/>
+		</mvc:interceptor>
+	</mvc:interceptors>
+	<!-- 视图解析器 -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/"></property>
+		<property name="suffix" value=".jsp"></property>
+	</bean>
+	<!-- 将静态资源放开 -->
+	<mvc:default-servlet-handler/>
+	
+	<bean id="mydatasource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+		<property name="username" value="root"/>
+		<property name="password" value="mysql"/>
+		<property name="url" value="jdbc:mysql://localhost:3306/enterprise"/>
+	</bean>
+	<!-- 在spring中生成一个sqlSessionFactory对象 -->
+	<bean id="sqlsessionfactorybean" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="mydatasource"/>
+		<property name="mapperLocations" value="classpath:org/luo/enterprise/entity/*.xml"/>
+	</bean>
+	<!-- 根据MapperDao生成Dao对象实例 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="org.luo.enterprise.dao"></property>
+		<!-- 指定@MyBatisDao所在位置 -->
+		<property name="annotationClass" value="org.luo.enterprise.util.MyBatisDao"></property>
+		<!-- 自动注入sqlsessionfactory -->
+	</bean>
+	<!-- 为了支持@Transactional -->
+	<tx:annotation-driven transaction-manager="txManager"/>
+	<!-- 事务控制 -->
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="mydatasource"></property>
+	</bean>
+</beans>
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="org.luo.enterprise.dao.KdcMapperDao">
+	<select id="findSK" parameterType="String" resultType="String">
+		select skey from kdc where tname=#{tname}
+	</select>
+	
+</mapper>

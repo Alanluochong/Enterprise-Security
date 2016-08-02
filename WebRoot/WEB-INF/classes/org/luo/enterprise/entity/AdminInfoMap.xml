@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="org.luo.enterprise.dao.AdminInfoMapperDao">
+	<select id="findByLoginNameAndPassword" parameterType="org.luo.enterprise.entity.AdminInfo" resultType="org.luo.enterprise.entity.AdminInfo">
+		select * from admininfo where login_name=#{login_name,jdbcType=VARCHAR} and password_md5=#{password_md5,jdbcType=VARCHAR}
+	</select>
+	<select id="findAll" resultType="org.luo.enterprise.entity.AdminInfo">
+		select * from ADMININFO order by id
+	</select>
+	<select id="findPage" parameterType="org.luo.enterprise.util.Page" resultType="org.luo.enterprise.entity.AdminInfo">
+		select * from admininfo limit #{begin},#{end}
+	</select>
+	<select id="findRows" resultType="int">
+		select count(*) from admininfo
+	</select>
+	<delete id="deleteAdminInfo" parameterType="int">
+		delete from ADMININFO where id=#{id}
+	</delete>
+	
+	<insert id="saveAdminInfo" parameterType="org.luo.enterprise.entity.AdminInfo">
+		insert into admininfo(LOGIN_NAME,password_md5,password,real_name,idcard_no,gender,phone,email,enrolldate)
+		values(#{login_name},#{password_md5},#{password},#{real_name},#{idcard_no},#{gender},
+		#{phone},#{email},CURDATE())
+	</insert>
+	
+	<select id="findById" parameterType="int" resultType="org.luo.enterprise.entity.AdminInfo">
+		select * from admininfo where id=#{id}
+	</select>
+	
+	<update id="updateAdminInfo" parameterType="org.luo.enterprise.entity.AdminInfo">
+		update admininfo set real_name=#{real_name},phone=#{phone,jdbcType=VARCHAR},
+		email=#{ email,jdbcType=VARCHAR},
+		password_md5=#{password_md5,jdbcType=VARCHAR},
+		password=#{password,jdbcType=VARCHAR} where id=#{id}
+	</update>
+	
+	<update id="modifyPassword" parameterType="org.luo.enterprise.entity.AdminInfo">
+		update admininfo set 
+		password_md5=#{password_md5,jdbcType=VARCHAR},
+		password=#{password,jdbcType=VARCHAR} where id=#{id}
+	</update>
+	<select id="findByLogin_name" parameterType="String" resultType="org.luo.enterprise.entity.AdminInfo">
+		select * from admininfo where login_name=#{login_name}
+	</select>
+	
+</mapper>
